@@ -1,0 +1,157 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model OrderViewModel
+@{
+
+
+    <table style="width:100%">
+        @{
+            <tr>
+
+                <td>Login заказчика</td>
+                <td>Часть проекта</td>
+                <td>Описание заказа</td>
+                <td>Оплата</td>
+                <td>Дата публикации</td>
+                <td>Осталось дней</td>
+                <td></td>
+            </tr>
+        }
+
+        @{
+
+
+            <tr>
+                <td>@Model.login_orderer</td>
+                <td>@Model.ProjectDescription</td>
+                <td>@Model.OrderDescription</td>
+                <td>@Model.Payment</td>
+                <td>@Model.Time</td>
+                <td>@Model.Days</td>
+
+                @if (Model.login_orderer == ViewBag.Name)
+                {
+                    <td>
+                        <a class="btn btn-sm btn-danger" href="~/Home/DeleteOrder/@Model.orderId" role="button">Delete Order</a>
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+    <h3>Необходимые ЯП</h3>
+    <ul class="list-group list-group-horizontal">
+        @foreach (PLModel pm in Model.plList)
+        {
+            <li class="list-group-item">
+                @pm.pl_desc
+                @if (ViewBag.Name == Model.login_orderer)
+                {
+                    <a href="~/Home/DeletePLFromOrder/@pm.id_pl&@Model.orderId" class="badge badge-danger">X</a>}
+            </li>
+        }
+    </ul>
+    <h3>Необходимые технологии</h3>
+    <ul class="list-group list-group-horizontal">
+        @foreach (TechModel tm in Model.techList)
+        {
+            <li class="list-group-item">
+                @tm.tech_desc
+                @if (ViewBag.Name == Model.login_orderer)
+                {
+                    <a href="~/Home/DeleteTechFromOrder/@tm.id_tech&@Model.orderId" class="badge badge-danger">X</a>
+                }
+            </li>
+        }
+    </ul>
+    @if (ViewBag.Name == Model.login_orderer)
+    {
+<form method="post" action="~/Home/AddCatalog">
+    <div>
+        <label for="selectedPl">Выберите ЯП</label><br />
+        <select for="selectedPl" name="selectedPl" size="3" multiple>
+            @foreach (PLModel pl in Model.plCatalog)
+            {
+                bool flag = true;
+                foreach(PLModel pm in Model.plList)
+                {
+                    if (pl.id_pl == pm.id_pl) flag = false;
+                }
+                if (flag)
+                {
+                <option value="@pl.id_pl">@pl.pl_desc</option>
+                }
+            }
+        </select>
+    </div>
+    <div>
+        <label for="selectedTech">Выберите технологии</label><br />
+        <select for="selectedTech" name="selectedTech" size="3" multiple>
+            @foreach (TechModel pl in Model.techCatalog)
+            {
+                bool flag = true;
+                foreach (TechModel pm in Model.techList)
+                {
+                    if (pl.id_tech == pm.id_tech) flag = false;
+                }
+                if (flag)
+                {
+                <option value="@pl.id_tech">@pl.tech_desc</option>
+                }
+            }
+        </select>
+    </div>
+    <input type="hidden" name="id_orders" value="@Model.orderId" />
+    <input class="btn btn-sm btn-primary" type="submit" value="Добавить технологию" />
+</form>
+    }
+    <br />
+    <h1>Ответы на заказ</h1>
+    @for (int i = 0; i < Model.comments.Count; i++)
+    {
+        <div><a href="~/Home/FreelancerPage/@Model.comments[i].login_freelancer">@Model.comments[i].login_freelancer</a> - @Model.comments[i].comment_msg <br /> at @Model.comments[i].comment_date.ToShortDateString() @Model.comments[i].comment_time.ToShortTimeString()</div>
+        @if (ViewBag.Name == Model.login_orderer)
+        {
+            <form action="~/Home/AppointFreelancer" method="post">
+                <input type="hidden" name="id_orders" value="@Model.orderId" />
+                <input type="hidden" name="login_freelancer" value="@Model.comments[i].login_freelancer" />
+
+                @if (Model.login_freelancer == null || Model.login_freelancer == "")
+                {
+                    <input type="hidden" name="flag" value="true" />
+                    <input class="btn btn-sm btn-primary" type="submit" value="Назначить исполнителя" />}
+                else
+                {
+                    if (Model.login_freelancer.Trim() == Model.comments[i].login_freelancer.Trim())
+                    {
+                        <input type="hidden" name="flag" value="false" />
+                        <input class="btn btn-sm btn-primary" type="submit" value="Отказаться от фрилансера" />
+                    }
+                }
+            </form>
+        }
+        <br />
+    }
+    <br />
+    <br />
+    <br />
+    @if (ViewBag.Role == "freelancer")
+    {
+        <form method="post" action="~/Home/PostComment">
+            <label>Комментарий:</label><br />
+            <textarea rows="5" cols="60" name="comment"></textarea>
+            <br />
+            <input type="file" name="link" />
+            <input type="hidden" name="login_freelancer" value="@ViewBag.Name" />
+            <input type="hidden" name="id_orders" value="@Model.orderId" />
+            <input type="submit" value="Отправить" />
+        </form>
+    }
+    @if (ViewBag.Name == Model.login_orderer)
+    {
+        <form method="post" action="~/Home/SetCompleted">
+            <input type="hidden" name="id_orders" value="@Model.orderId" />
+            <input class="btn btn-sm btn-primary" type="submit" value="Завершить заказ" onclick="return confirm('Вы уверены что хотите завершить заказ?')" />
+        </form>
+    }
+}

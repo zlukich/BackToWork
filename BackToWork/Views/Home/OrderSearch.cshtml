@@ -1,0 +1,51 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<OrderViewModel> 
+@{
+    <table style="width:100%">
+        @{
+            <tr>
+
+                <td>Login заказчика</td>
+                <td>Часть проекта</td>
+                <td>Описание заказа</td>
+                <td>Оплата</td>
+                <td>Дата публикации</td>
+                <td>Дней на выполнение</td>
+                <td></td>
+            </tr>
+        }
+
+        @{
+            foreach (OrderViewModel exmpl in Model)
+            {
+
+                <tr>
+                    <td><a href="/Home/OrdererPage/@exmpl.login_orderer">@exmpl.login_orderer</a></td>
+                    <td>@exmpl.ProjectDescription</td>
+                    <td><a href="~/Home/Orders/@exmpl.orderId">@exmpl.OrderDescription</a></td>
+                    <td>@exmpl.Payment</td>
+                    <td>@exmpl.Time</td>
+                    <td>@exmpl.Days</td>
+
+                    @if (exmpl.login_orderer == ViewBag.Name || ViewBag.Role == "admin")
+                    {
+                        <td>
+                            <a class="btn btn-sm btn-danger" href="~/Home/DeleteOrder/@exmpl.orderId" role="button">Delete Order</a>
+                        </td>
+
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td>
+                        <a class="btn btn-sm btn-danger" href="~/Home/ReportOrder/@exmpl.orderId" role="button">Report Order</a>
+                    </td>
+                </tr>
+
+            }
+        }
+    </table>
+}

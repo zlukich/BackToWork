@@ -1,0 +1,32 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model BackToWork.Models.ReportViewModel
+@{
+    ViewBag.Title = $"Жалоба на заказ под номером{Model.id_orders}";
+}
+@{
+    <form asp-action="ReportOrder" asp-controller="Home">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <div asp-for="order_desc">@Model.login_orderer</div>
+        </div>
+        <div class="form-group">
+            <input type="hidden" asp-for="login_freelancer" />
+        </div>
+        <div class="form-group">
+            <input type="hidden" asp-for="id_orders" />
+        </div>
+        <div class="form-group">
+            <label asp-for="order_desc" class="control-label">Email</label>
+            <div asp-for="order_desc">@Model.order_desc</div>
+        </div>
+        <div class="form-group">
+            <label asp-for="comment" class="control-label">Жалоба</label>
+            <input type="text" asp-for="comment" class="form-control" />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Подать жалобу" class="btn btn-outline-secondary btn-danger" />
+        </div>
+    </form>
+}

@@ -1,0 +1,107 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model DisplayFreelancerViewModel
+@{
+    ViewData["Title"] = "FreelancerPage";
+}
+<style type="text/css">
+
+    .rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        
+    }
+
+        .rating > input {
+            display: none
+        }
+
+        .rating > label {
+            position: relative;
+            width: 1em;
+            font-size: 6vw;
+            color: #FFD600;
+            cursor: pointer
+        }
+
+            .rating > label::before {
+                content: "\2605";
+                position: absolute;
+                opacity: 0
+            }
+
+            .rating > label:hover:before,
+            .rating > label:hover ~ label:before {
+                opacity: 1 !important
+            }
+
+        .rating > input:checked ~ label:before {
+            opacity: 1
+        }
+
+        .rating:hover > input:checked ~ label:before {
+            opacity: 0.4
+        }
+</style>
+
+
+<h2>Индивидуальная страничка фрилансера @Model.vm.exemplars[0][3]</h2>
+<table style="width:100%">
+    @{
+        for (int i = 0; i < Model.vm.column_names.Length; i++)
+        {
+            <td>@Model.vm.column_names[i]</td>
+        }
+    }
+
+    @{
+        foreach (object[] exmpl in Model.vm.exemplars)
+        {
+            <tr>
+                @for (int i = 0; i < exmpl.Length; i++)
+                {
+
+                    <td>@exmpl[i]</td>
+                }
+            </tr>
+        }
+    }
+    @if (ViewBag.Owner == true)
+    {
+        <div><a class="btn btn-sm btn-primary" href="~/Home/EditFreelancerPage/@Model.vm.exemplars[0][3]">Edit</a></div>
+    }
+    else
+    {
+
+    }
+</table>
+<br />
+<br />
+<h2>Отзывы о исполнителе</h2>
+@for (int i = 0; i < Model.reviews.Count; i++)
+{
+<div>
+    <a href="~/Home/OrdererPage/@Model.reviews[i].login_orderer">@Model.reviews[i].login_orderer</a> - @Model.reviews[i].review_commet <span style="color:yellow">@Model.reviews[i].mark</span> <br /> at @Model.reviews[i].time.ToString()
+
+    @if(ViewBag.Name == @Model.reviews[i].login_orderer.Trim())
+    {
+        <a class="btn btn-sm btn-danger" href="~/Home/DeleteReview/@Model.reviews[i].id_review&@Model.reviews[i].login_freelancer&@Model.reviews[i].login_orderer" role="button">Delete Review</a>
+    }
+</div>
+<br />
+}
+@if (ViewBag.Role == "orderer")
+{
+<form method="post" action="~/Home/PostReview">
+    <label>Комментарий:</label><br />
+    <textarea rows="5" cols="60" name="review_comment"></textarea>
+    <input type="hidden" name="login_orderer" value="@ViewBag.Name" />
+    <input type="hidden" name="login_freelancer" value="@Model.vm.exemplars[0][3]" />
+    <div class="rating">
+        <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label> <input type="radio" name="rating" value="4" id="4"><label for="4">☆</label> <input type="radio" name="rating" value="3" id="3"><label for="3">☆</label> <input type="radio" name="rating" value="2" id="2"><label for="2">☆</label> <input type="radio" name="rating" value="1" id="1"><label for="1">☆</label>
+    </div>
+    <input type="submit" value="Отправить" />
+</form>
+}

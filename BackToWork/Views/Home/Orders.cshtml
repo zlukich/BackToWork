@@ -1,0 +1,145 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model CatalogViewModel
+@{
+    @if (User.Identity.IsAuthenticated)
+    {
+        @if (ViewBag.Role == "freelancer")
+        {
+            //<div><a class="btn btn-sm btn-primary" href="~/Home/EditFreelancerPage/@ViewBag.Name">Add Order</a></div>
+        }
+        else
+        {
+            <div><a class="btn btn-sm btn-primary" href="~/Home/AddOrder/">Add Order</a></div>
+
+        }
+    }
+    <br />
+    <table>
+        <tr>
+            <td><label for="desc">Описание заказа</label></td>
+            <td>ЯП</td>
+            <td>Технологии</td>
+            <td><label for="is_complited">Завершенные проекты</label></td>
+        </tr>
+        <tr></tr>
+        <tr>
+            <td>
+                <input type="text" id="desc" />
+            </td>
+            <td>
+                <select asp-for="selectedPl" id="selectedPl" multiple size="5">
+                    @foreach (PLModel pl in Model.plCatalog)
+                    {
+                        <option value="@pl.id_pl">@pl.pl_desc</option>
+                    }
+                </select>
+            </td>
+            <td>
+                <select asp-for="selectedPl" multiple id="selectedTech" size="5">
+                    @foreach (TechModel pl in Model.techCatalog)
+                    {
+                        <option value="@pl.id_tech">@pl.tech_desc</option>
+                    }
+                </select>
+            </td>
+            <td>
+                <input type="checkbox" id="is_complited" style="align-content:center;text-align:center" />
+            </td>
+            <td>
+                <input type="button" id="btnGet" value="Отфильтровать" />
+            </td>
+        </tr>
+    </table>
+    <br />
+    <br />
+    <span id="result"></span>
+
+
+    @*<form asp-action="OrderSearch" asp-controller="Home" method="POST" data-ajax="true" data-ajax-update="#divEmp" data-ajax-complete="onComplete" data-ajax-failure="onFailed" data-ajax-success="onSuccess">
+            <input  type="text" name="desc" />
+            <button class="btn btn-primary" type="submit">Filter</button>
+        </form>
+        <div id="divEmp"></div>*@
+
+    @*<table style="width:100%">
+            @{
+                <tr>
+
+                    <td>Login заказчика</td>
+                    <td>Часть проекта</td>
+                    <td>Описание заказа</td>
+                    <td>Оплата</td>
+                    <td>Дата публикации</td>
+                    <td>Дней на выполнение</td>
+                    <td></td>
+                </tr>
+            }
+
+            @{
+                foreach (OrderViewModel exmpl in Model)
+                {
+
+                    <tr>
+                        <td><a href="/Home/OrdererPage/@exmpl.login_orderer">@exmpl.login_orderer</a></td>
+                        <td>@exmpl.ProjectDescription</td>
+                        <td><a href="~/Home/Orders/@exmpl.orderId">@exmpl.OrderDescription</a></td>
+                        <td>@exmpl.Payment</td>
+                        <td>@exmpl.Time</td>
+                        <td>@exmpl.Days</td>
+
+                        @if (exmpl.login_orderer == ViewBag.Name)
+                        {
+                            <td>
+                                <a class="btn btn-sm btn-danger" href="~/Home/DeleteOrder/@exmpl.orderId" role="button">Delete Order</a>
+                            </td>
+                        }
+                    </tr>
+
+                }
+            }
+        </table>*@
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#btnGet").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/OrderSearch",
+                    data: {
+                        "desc": $("#desc").val(), "selectedPl": $("#selectedPl").val(), "selectedTech": $("#selectedTech").val(), "is_complited": $("#is_complited").is(
+                            ":checked")},
+                    success: function (response) {
+                        $('#result').html(response);
+                    },
+                    failure: function (response) {
+                        return response;
+                    },
+                    error: function (response) {
+                        return response;
+                    }
+                });
+            });
+            $("#desc").keyup(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/OrderSearch",
+                    data: { "desc": $("#desc").val() },
+                    success: function (response) {
+                        $('#result').html(response);
+                    },
+                    failure: function (response) {
+                        return response;
+                    },
+                    error: function (response) {
+                        return response;
+                    }
+                });
+            });
+            $(document).ready(function () {
+                $("#btnGet").click();
+            })
+        });
+    </script>
+}

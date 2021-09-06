@@ -1,0 +1,122 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model AddOrderViewModel
+@{
+    <form asp-action="AddOrder" asp-controller="Home">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div>
+
+            <input type="checkbox" id="proj" name="interest" value="Хотите ли вы создать заказ в раздел текущих заказов?" />
+            <label for="proj">Хотите ли вы создать заказ в раздел текущих заказов?</label>
+        </div>
+        @*<div>
+            <label for="proj_select">Other</label>
+            <input type="text" id="proj_select" name="Проекты">
+        </div>*@
+        <div class="form-group">
+            <input type="hidden" asp-for="projects" />
+        </div>
+        <div id="proj_select" class="form-group">
+
+            <select asp-for="id_project" id="sel">
+                @{
+
+                    for (int i = 0; i < Model.projects.Count; i++)
+                    {
+                        @if (i == 0)
+                        {
+                            <option value=0 selected disabled hidden>Choose here</option>
+                        }
+
+                        <option value="@Model.projects[i][0]">
+                            @Model.projects[i][1]
+                        </option>
+                    }
+                }
+
+            </select>
+
+            <label for="sel">Выберите проект</label>
+        </div>
+        <div class="form-group" id="textField">
+            <label asp-for="projectDescription" class="control-label">Описание проекта</label>
+            <input type="text" asp-for="projectDescription" class="form-control" id="text" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Days" class="control-label">Дней до завершения заказа</label>
+            <input type="number" asp-for="Days" class="form-control" />
+        </div>
+        <div class="form-group" id="textField">
+            <label asp-for="workDescription" class="control-label">Описание заказа</label>
+            <input type="text" asp-for="workDescription" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Payment" class="control-label">Оплата в гривнах</label>
+            <input type="number" asp-for="Payment" class="form-control" />
+        </div>
+        <div class="form-group" id="textField">
+            <label asp-for="Link" class="control-label">Описание проекта</label>
+            <input type="file" asp-for="Link" class="form-control" />
+        </div>
+        <div class="form-group">
+            <input type="hidden" asp-for="login_orderer" />
+        </div>
+        <div class="form-group">
+            <input type="hidden" asp-for="is_completed" value="false" />
+        </div>
+        <div class="form-group">
+            <input type="hidden" asp-for="id" />
+        </div>
+        <div>
+            <label asp-for="selectedPl">Выберите ЯП</label><br />
+            <select asp-for="selectedPl">
+                @foreach (PLModel pl in Model.plList)
+                {
+                    <option value="@pl.id_pl">@pl.pl_desc</option>
+                }
+            </select>
+            <span asp-validation-for="selectedPl" />
+        </div>
+        <div>
+            <label asp-for="selectedTech">Выберите технологии</label><br />
+            <select asp-for="selectedTech">
+                @foreach (TechModel pl in Model.techList)
+                {
+                    <option value="@pl.id_tech">@pl.tech_desc</option>
+                }
+            </select>
+            <span asp-validation-for="selectedTech" />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Сохранить" class="btn btn-outline-secondary" />
+        </div>
+
+    </form>
+    <script type="text/javascript">
+        var projField = document.getElementById("proj_select");
+        var textField = document.getElementById("textField");
+        var checkBox = document.getElementById("proj");
+        var select = document.getElementById("sel");
+        projField.style.display = 'none';
+        select.addEventListener('change', () => {
+            var selectedText = $('#sel').find(":selected").text();
+            $('#text').val(selectedText);
+            //console.log('changed');
+        });
+        checkBox.addEventListener('change', () => {
+            if (checkBox.checked) {
+                projField.style.display = 'block';
+                textField.style.display = 'none';
+                //console.log('checkbox');
+            } else {
+                select.value = 0;
+                $('#text').val("");
+                projField.style.display = 'none';
+                textField.style.display = 'block';
+                
+            }
+        });
+    </script>
+}

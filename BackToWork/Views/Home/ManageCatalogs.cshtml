@@ -1,0 +1,87 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model AddCatalogViewModel
+@{
+    <h2>Таблица ЯП</h2>
+    <table style="width:100%">
+        @{
+            <tr>
+
+                <td>Идентификатор яз.прог.</td>
+                <td>Описание яз.прог.</td>
+            </tr>
+        }
+        @{
+            @if (Model.plList != null)
+            {
+                foreach (PLModel exmpl in Model.plList)
+                {
+                    <tr>
+                        <td>@exmpl.id_pl</td>
+                        <td>
+                            @exmpl.pl_desc
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-danger" href="/Home/DeleteCatalog/@exmpl.id_pl&pl" role="button" onclick="return confirm('Вы уверены что хотите завершить ЯП?">Delete PL</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </table>
+    <br />
+    <h2>Таблица технологий</h2>
+    <table style="width:100%">
+        @{
+            <tr>
+
+                <td>Идентификатор технологии</td>
+                <td>Описание технологии</td>
+            </tr>
+        }
+        @{ if (Model.techList != null)
+            {
+                foreach (TechModel exmpl in Model.techList)
+                {
+                    <tr>
+                        <td>@exmpl.id_tech</td>
+                        <td>
+                            @exmpl.tech_desc
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-danger" href="/Home/DeleteCatalog/@exmpl.id_tech&tech" role="button" onclick="return confirm('Вы уверены что хотите завершить технологию?">Delete Tech</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+        <br />
+    </table>
+    <br />
+    <h2>Добавить технологию или ЯП</h2>
+    <form asp-action="ManageCatalogs" asp-controller="Home">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div>
+            <input type="hidden" asp-for="id" />
+            <span asp-validation-for="id" />
+        </div>
+        <p>
+            <label asp-for="desc">Введите описание технологии</label><br />
+            <input type="text" asp-for="desc" />
+            <span asp-validation-for="desc" />
+        </p>
+        <p>
+            <label asp-for="type">Выберите Роль</label><br />
+            <select asp-for="type">
+                <option value="tech">Технология</option>
+                <option value="pl">Язык программирования</option>
+                <!--<option value="admin">Admin</option>-->
+            </select>
+            <span asp-validation-for="type" />
+        </p>
+        <p class="form-group">
+            <input type="submit" value="Добавить" class="btn btn-outline-secondary" />
+        </p>
+    </form>
+}

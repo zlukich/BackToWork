@@ -1,0 +1,46 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model BackToWork.Models.EditOrdererViewModel
+@{
+    ViewBag.Title = "Редактирование пользователя";
+}
+@{
+
+    <form asp-action="EditOrdererPage" asp-controller="Home">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <input type="hidden" asp-for="Login" />
+        </div>
+        <div class="form-group">
+            <input type="hidden" asp-for="Activated" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Email" class="control-label">Email</label>
+            <input type="text" asp-for="Email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label">Имя</label>
+            <input type="text" asp-for="Name" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Number" class="control-label">Регион</label>
+            <input type="text" asp-for="Number" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="control-label">Описание</label>
+            <input type="text" asp-for="Description" class="form-control" />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Сохранить" class="btn btn-outline-secondary" />
+        </div>
+        @if (Model.Activated)
+        {
+            <div>Активированный аккаунт</div>
+        }
+        else
+        {
+            <div>Не активированный аккаунт</div>
+        }
+    </form>
+}
